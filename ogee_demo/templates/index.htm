@@ -34,7 +34,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <!-- Meta -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
+    <meta name="description" content="{% trans 'Ogee Arches — Linked.Art in Arches for Cultural Heritage' %}">
     <meta name="author" content="">
 
     <link rel="shortcut icon" href="{% webpack_static 'favicons/favicon.ico' %}" type="image/x-icon" />
@@ -51,12 +51,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="{% webpack_static 'plugins/slick/slick.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% webpack_static 'plugins/slick/accessible-slick-theme.min.css' %}">
 
-        {% render_bundle 'css/index' 'css' %}
-        {% render_bundle 'css/index-slider' 'css' %}
-
         {% if app_settings.ACCESSIBILITY_MODE %}
             {% render_bundle 'css/accessibility' 'css' %}
         {% endif %}
+
+        <!-- Ogee Custom Styles (replaces default Arches index CSS) -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/ogee-custom.css' %}">
     {% endblock css %}
 </head>
 
@@ -68,12 +68,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="v5-splash-navbar navbar">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <button 
-                        type="button" 
-                        class="navbar-toggle collapsed" 
-                        data-toggle="collapse" 
+                    <button
+                        type="button"
+                        class="navbar-toggle collapsed"
+                        data-toggle="collapse"
                         data-target="#myNavbar"
-                        aria-expanded="false" 
+                        aria-expanded="false"
                         aria-controls="myNavbar"
                     >
                         <span class="sr-only">{% trans 'Toggle navigation' %}</span>
@@ -90,22 +90,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             >
                         </div>
                         <div class="application-name">
-                            <h1>{% blocktrans %}Arches | {{ version }}{% endblocktrans %}</h1>
+                            <h1>{% blocktrans %}Ogee | {{ version }}{% endblocktrans %}</h1>
                         </div>
                     </div>
                 </div>
 
-                <nav 
-                    id="myNavbar" 
+                <nav
+                    id="myNavbar"
                     class="navbar-collapse collapse"
-                    aria-label="{% trans 'Arches Application Navigation' %}"
+                    aria-label="{% trans 'Ogee Application Navigation' %}"
                 >
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#info-block-1">{% trans "Arches Features" %}</a>
+                            <a href="#info-block-1">{% trans "Features" %}</a>
                         </li>
                         <li>
-                            <a href="{% url 'search_home' %}">{% trans "Search Arches" %}</a>
+                            <a href="#info-block-2">{% trans "Models" %}</a>
+                        </li>
+                        <li>
+                            <a href="#info-block-3">{% trans "Vocabulary" %}</a>
+                        </li>
+                        <li>
+                            <a href="#info-block-4">{% trans "Documentation" %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'search_home' %}">{% trans "Search Ogee" %}</a>
                         </li>
 
                         {% if user|can_create_resource_instance and user.username != 'anonymous' %}
@@ -116,8 +125,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                         {% if user.username == 'anonymous' %}
                         <li>
-                            <a 
-                                class="application-login" 
+                            <a
+                                class="application-login"
                                 id="auth-link"
                                 href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}"
                             >
@@ -126,8 +135,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </li>
                         {% else %}
                         <li>
-                            <a 
-                                class="auth-welcome" 
+                            <a
+                                class="auth-welcome"
                                 href="{% url 'user_profile_manager' %}"
                                 aria-label="{% trans 'Visit user profile' %}"
                             >
@@ -137,7 +146,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </a>
                         </li>
                         <li>
-                            <a 
+                            <a
                                 class="application-login"
                                 href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}"
                             >
@@ -170,81 +179,69 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <!-- Intro Section -->
             <section id="info-block-0" class="app-info-block intro-section relative">
                 <!-- Vertical Nav -->
+                <div class="vertical-nav-container-background"></div>
                 <nav id="cd-vertical-nav" class="vertical-nav-container" aria-label="{% trans 'Page Navigation' %}">
                     <ul class="vertical-nav-list">
                         <li class="active">
                             <a class="vertical-nav-list-link" href="#info-block-0" data-number="1"
-                                aria-label="{% trans 'Go to the top of the page' %}"
-                                data-bind="click: function() { document.querySelector('#info-block-0').focus; }">
+                                aria-label="{% trans 'Go to the top of the page' %}">
                                 <span class="vertical-nav-list-ref">{% trans "Home" %}</span>
                             </a>
                         </li>
                         <li>
                             <a class="vertical-nav-list-link" href="#info-block-1" data-number="2"
-                                aria-label="{% trans 'Go to the fast section' %}">
-                                <span class="vertical-nav-list-ref">{% trans "Fast" %}</span>
+                                aria-label="{% trans 'Go to the ready-to-go section' %}">
+                                <span class="vertical-nav-list-ref">{% trans "Ready-to-Go" %}</span>
                             </a>
                         </li>
                         <li>
                             <a class="vertical-nav-list-link" href="#info-block-2" data-number="3"
-                                aria-label="{% trans 'Go to the workflows section' %}">
-                                <span class="vertical-nav-list-ref">{% trans "Workflows" %}</span>
+                                aria-label="{% trans 'Go to the standardized models section' %}">
+                                <span class="vertical-nav-list-ref">{% trans "Standardized Models" %}</span>
                             </a>
                         </li>
                         <li>
                             <a class="vertical-nav-list-link" href="#info-block-3" data-number="4"
-                                aria-label="{% trans 'Go to the search tools section' %}">
-                                <span class="vertical-nav-list-ref">{% trans "Search Tools" %}</span>
+                                aria-label="{% trans 'Go to the defined vocabulary section' %}">
+                                <span class="vertical-nav-list-ref">{% trans "Defined Vocabulary" %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="vertical-nav-list-link" href="#info-block-4" data-number="5"
+                                aria-label="{% trans 'Go to the documentation section' %}">
+                                <span class="vertical-nav-list-ref">{% trans "Documentation" %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="vertical-nav-list-link" href="#info-block-5" data-number="6"
+                                aria-label="{% trans 'Go to the why ogee section' %}">
+                                <span class="vertical-nav-list-ref">{% trans "Ogee?" %}</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
 
-                <!-- Slider - Start -->
+                <!-- Hero -->
                 <div class="home-slider">
                     <div class="slide-img-container">
-                        <img src="{% webpack_static 'img/landing/landing-primary.jpg' %}" alt=""
+                        <img src="{% static 'img/ogee2.jpeg' %}" alt=""
                             aria-describedby="slide1-attribution">
                         <div class="slide-caption">
-                            <h2>{% blocktrans %}Arches {{ version }}{% endblocktrans %}</h2>
-                            <p>{% trans "A web and mobile platform for" %}</p>
-                            <p>{% trans "managing your most important resource information" %}</p>
+                            <span class="hero-eyebrow">{% trans "Getty Digital &middot; Takin.solutions" %}</span>
+                            <h2>{% blocktrans %}Ogee Arches {{ version }}{% endblocktrans %}</h2>
+                            <span class="hero-divider"></span>
+                            <p>{% trans "Linked.Art in Arches for Cultural Heritage." %}<br>{% trans "Semantic data patterns, ready to deploy." %}</p>
                         </div>
                         <div id="slide1-attribution" class="slide-img-attribution">
-                            {% trans "Image courtesy of Luis Alfonso Orellana" %}
-                        </div>
-                    </div>
-                    <div class="slide-img-container">
-                        <img src="{% webpack_static 'img/landing/bhutan_tigersnest_lr.jpg' %}" alt=""
-                            aria-describedby="slide2-attribution">
-                        <div class="slide-caption">
-                            <h2>{% blocktrans %}Arches {{ version }}{% endblocktrans %}</h2>
-                            <p>{% trans "A web and mobile platform for" %}</p>
-                            <p>{% trans "managing your most important resource information" %}</p>
-                        </div>
-                        <div id="slide2-attribution" class="slide-img-attribution">
-                            {% trans "Taktsang Palphug Monastery (also known as Paro Takstang or Tiger's Nest Monastery), Bhutan" %}
-                        </div>
-                    </div>
-                    <div class="slide-img-container">
-                        <img src="{% webpack_static 'img/landing/potala_palace.jpg' %}" alt=""
-                            aria-describedby="slide3-attribution">
-                        <div class="slide-caption">
-                            <h2>{% blocktrans %}Arches {{ version }}{% endblocktrans %}</h2>
-                            <p>{% trans "A web and mobile platform for" %}</p>
-                            <p>{% trans "managing your most important resource information" %}</p>
-                        </div>
-                        <div id="slide3-attribution" class="slide-img-attribution">
-                            {% trans "Potala Palace in Lhasa, Tibet" %}
+                            {% trans "An Ogee | Takin.solutions | Attribution 4.0 Generic (CC BY 4.0)" %}
                         </div>
                     </div>
                 </div>
-                <!-- Slider - End -->
 
                 <!-- Down button -->
-                <a 
-                    href="#info-block-1" 
-                    class="down-button" 
+                <a
+                    href="#info-block-1"
+                    class="down-button"
                     aria-label="{% trans 'Go to content' %}"
                 >
                     <i class="fa fa-angle-down down-button-icon"></i>
@@ -253,271 +250,255 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </section>
             <!-- End Intro Section -->
 
-            <!-- Info Block 1 -->
+            <!-- Section 01: Ready-to-Go -->
             <section id="info-block-1" class="app-info-block relative">
                 <div>
+                    <div class="section-eyebrow">{% trans "01 — Overview" %}</div>
+                    <h2 class="app-info-block-header">{% trans "Ready-to-Go" %}</h2>
+                    <h3 class="app-info-block-title">{% trans "Deploy Linked.Art semantic data — easily and correctly" %}</h3>
 
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Fast" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Deploy Applications Rapidly" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% blocktrans %}
-                                        Design custom information management applications in hours. Build your
-                                        databases with Arches Designer, then configure your interface all without having to
-                                        write any code.
-                                    {% endblocktrans %}
-                                </p>
-                            </div>
+                    <div class="section-body">
+                        <div class="app-info-block-text">
+                            <p>
+                                {% blocktrans %}
+                                    Ogee Arches is a complete package for the <a href="https://www.archesproject.org" target="_blank">Arches platform</a>
+                                    that implements the <a href="https://linked.art" target="_blank">Linked.Art</a> data model with pre-built vocabulary
+                                    and full documentation.
+                                {% endblocktrans %}
+                            </p>
+                            <p>
+                                {% blocktrans %}
+                                    Created by <a href="https://www.getty.edu/" target="_blank">Getty Digital</a> with
+                                    <a href="https://www.takin.solutions/" target="_blank">Takin.solutions</a>, Ogee provides the complete set of
+                                    Linked.Art models configured and ready to use — taking the difficulty out of starting a Linked.Art project on Arches.
+                                {% endblocktrans %}
+                            </p>
+                            <p>
+                                {% trans "Use it as a starting point: extend or prune it to fit your project. It's open source and available for any institution or individual to adopt." %}
+                            </p>
+                        </div>
+                        <div class="section-image">
+                            <img src="{% static 'img/linked_art_model.png' %}"
+                                alt="{% trans 'Linked.Art data model' %}">
                         </div>
                     </div>
 
-                    <!-- Content -->
-                    <div class="splash-img">
-                        <img src="{% webpack_static 'img/landing/imac_designer.png' %}"
-                            alt="{% trans 'Arches Designer' %}">
-                    </div>
-
-                    <!-- Sub-section -->
-                    <div class="row app-info-sub-block">
-
-                        <!-- Arches Data Type Block -->
-                        <div class="col-lg-6">
-                            <div class="sub-block-container">
-                                <h3 class="app-info-block-title">{% trans "Interface Manager" %}</h3>
-                                <p class="sub-block-description">
-                                    {% blocktrans %}
-                                        Arches automatically creates data entry forms based on your data models.
-                                        Use Arches' Card Manager to configure the look and feel of your data entry UI.
-                                    {% endblocktrans %}
-                                </p>
-                                <img class="sub-block-image" src="{% webpack_static 'img/landing/card_manager.png' %}"
-                                    alt="{% trans 'Card Manager' %}">
-                            </div>
+                    <!-- Partner cards -->
+                    <div class="partners">
+                        <div class="partner-card">
+                            <h3>{% trans "Getty Digital" %}</h3>
+                            <p>{% trans "Creating interoperable pathways between Cultural Heritage datasets." %}</p>
+                            <a href="https://www.getty.edu/" target="_blank">
+                                <img class="partner-logo" src="{% static 'img/Getty_Logo_Primary_Blue_RGB.jpg' %}"
+                                    alt="{% trans 'Getty Logo' %}">
+                            </a>
                         </div>
-
-                        <!-- Arches Data Type Block -->
-                        <div class="col-lg-6">
-                            <div class="sub-block-container">
-                                <h3 class="app-info-block-title">{% trans "Data Security" %}</h3>
-                                <p class="sub-block-description">
-                                    {% blocktrans %}
-                                        Use Arches' Permissions Manager to set up data access rules for all your
-                                        user groups and individual accounts. You can define read/write/delete and no-access
-                                        permissions.
-                                    {% endblocktrans %}
-                                </p>
-                                <img class="sub-block-image"
-                                    src="{% webpack_static 'img/landing/permissions_manager.png' %}"
-                                    alt="{% trans 'Permissions Manager' %}">
-                            </div>
+                        <div class="partner-card">
+                            <h3>{% trans "Takin.solutions" %}</h3>
+                            <p>{% trans "Semantic data solutions for historical knowledge." %}</p>
+                            <a href="https://www.takin.solutions/" target="_blank">
+                                <img class="partner-logo" src="{% static 'img/takin_logo3.jpg' %}"
+                                    alt="{% trans 'Takin.solutions Logo' %}">
+                            </a>
                         </div>
-
                     </div>
-                    <!-- End Sub-section -->
 
                 </div>
             </section>
-            <!-- End Info Block 1 -->
+            <!-- End Section 01 -->
 
-            <!-- Info Block 2 -->
+            <!-- Section 02: Standardized Data Models -->
             <section id="info-block-2" class="app-info-block relative">
                 <div>
+                    <div class="section-eyebrow">{% trans "02 — Foundation" %}</div>
+                    <h2 class="app-info-block-header">{% trans "Standardized Data Models" %}</h2>
+                    <h3 class="app-info-block-title">{% trans "Fully implemented Linked.Art semantic data models" %}</h3>
 
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Workflows" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Orchestrate your data entry" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% blocktrans %}
-                                        Design step-wise data management interfaces that simplify complex editing
-                                        tasks. Ensure that everyone enters data completely and consistently
-                                    {% endblocktrans %}
-                                </p>
-                            </div>
+                    <div class="section-body reverse">
+                        <div class="app-info-block-text">
+                            <p>
+                                {% blocktrans %}
+                                    The <a href="https://linked.art" target="_blank">Linked.Art</a> community creates standardized semantic data
+                                    models using the CIDOC CRM standard — enabling accurate recording of cultural heritage objects and their
+                                    relationships, integrated across institutions.
+                                {% endblocktrans %}
+                            </p>
+                            <p>
+                                {% trans "Ogee strictly follows the Linked.Art modeling patterns (current as of December 2023) and implements all eleven projected data models. Users start making Linked.Art-compatible data from day one, with the freedom to extend or limit models to their use case." %}
+                            </p>
                         </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="splash-img">
-                        <img class="sub-block-image" src="{% webpack_static 'img/landing/consultation_workflow.jpg' %}"
-                            alt="{% trans 'Arches Workflows' %}">
+                        <div class="section-image">
+                            <img src="{% static 'img/data_models.png' %}"
+                                alt="{% trans 'Ogee data models' %}">
+                        </div>
                     </div>
 
                 </div>
             </section>
-            <!-- End Info Block 2 -->
+            <!-- End Section 02 -->
 
-            <!-- Info Block 3 -->
+            <!-- Section 03: Defined Vocabulary -->
             <section id="info-block-3" class="app-info-block relative">
                 <div>
+                    <div class="section-eyebrow">{% trans "03 — Reference Data" %}</div>
+                    <h2 class="app-info-block-header">{% trans "Defined Vocabulary" %}</h2>
+                    <h3 class="app-info-block-title">{% trans "Pre-organized reference data to get you started" %}</h3>
 
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Arches Search Tools" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Find what you're looking for" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% blocktrans %}
-                                        Arches comes with powerful built-in search tools. Quickly filter large
-                                        databases with term, geospatial, and time-based search components
-                                    {% endblocktrans %}
-                                </p>
-                            </div>
+                    <div class="section-body">
+                        <div class="app-info-block-text">
+                            <p>
+                                {% trans "Rich semantic models need rich vocabulary — and building correct vocabulary structures from scratch is one of the biggest delays in implementation." %}
+                            </p>
+                            <p>
+                                {% blocktrans %}
+                                    Ogee ships with a ready-made vocabulary in the RDM, primed with sample terms from the
+                                    <a href="https://www.getty.edu/research/tools/vocabularies/aat/" target="_blank">Getty AAT</a> for all
+                                    standardized concept types. You get a clear guide to the intention of each semantic field, with good default
+                                    terms you can extend or prune.
+                                {% endblocktrans %}
+                            </p>
                         </div>
-                    </div>
-
-                    <div class="splash-img">
-                        <img class="sub-block-image" src="{% webpack_static 'img/landing/arches_search.png' %}"
-                            alt="{% trans 'Arches Search' %}">
-                    </div>
-
-                    <!-- Sub-section -->
-                    <div class="wide-box">
-                        <div class="box-highlight">
-                            <h3 class="app-info-block-header">{% trans "Search Options" %}</h3>
-                            <p>
-                                {% blocktrans %}
-                                    Arches gives you many ways to find precisely the information you need, even if
-                                    your Arches application contains 10's of millions of records. In addition to term,
-                                    thesaurus, geospatial, and temporal filters, Arches provides you with advanced filtering
-                                    options that support boolean logic, inverses, and many other filtering options.
-                                {% endblocktrans %}
-                            </p>
-                            <br>
-                            <p>
-                                {% blocktrans %}
-                                    Arches' search capabilities also provide for sophisticated data
-                                    visualizations, including interactive displays of the connections between your data
-                                    objects using a Force Directed Graph.
-                                {% endblocktrans %}
-                            </p>
-                            <br>
-                            <p>
-                                {% blocktrans %}
-                                    If you're a software developer, you can build on Arches modular search
-                                    services and create your own filters, reports, and visualizations to best show off your
-                                    particular dataset.
-                                {% endblocktrans %}
-                            </p>
+                        <div class="section-image">
+                            <img src="{% static 'img/vocabulary.png' %}"
+                                alt="{% trans 'Vocabulary structure' %}">
                         </div>
                     </div>
 
                 </div>
             </section>
-            <!-- End Info Block 3 -->
+            <!-- End Section 03 -->
+
+            <!-- Section 04: Full Semantic Documentation -->
+            <section id="info-block-4" class="app-info-block relative">
+                <div>
+                    <div class="section-eyebrow">{% trans "04 — Knowledge" %}</div>
+                    <h2 class="app-info-block-header">{% trans "Full Semantic Documentation" %}</h2>
+                    <h3 class="app-info-block-title">{% trans "Modular documentation that explains your system semantics" %}</h3>
+
+                    <div class="section-body reverse">
+                        <div class="app-info-block-text">
+                            <p>
+                                {% blocktrans %}
+                                    Ogee is documented using <a href="https://dev.pletka.io/projects/OGEE" target="_blank">Pletka</a>, which creates
+                                    modular documentation of every model and field — a shared reference for modellers, developers, and end users.
+                                {% endblocktrans %}
+                            </p>
+                            <p>
+                                {% trans "The documentation is open: adopt it, extend it, modify it using the semantic reference data modelling method, and share your Arches implementation with others." %}
+                            </p>
+                        </div>
+                        <div class="section-image">
+                            <img src="{% static 'img/pletka_ogee.png' %}"
+                                alt="{% trans 'Pletka documentation tool' %}">
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            <!-- End Section 04 -->
+
+            <!-- Section 05: Why Ogee? -->
+            <section id="info-block-5" class="app-info-block relative">
+                <div>
+                    <div class="section-eyebrow">{% trans "05 — Philosophy" %}</div>
+                    <h2 class="app-info-block-header">{% trans "Why Ogee?" %}</h2>
+                    <h3 class="app-info-block-title">{% trans "Patterns that show the unity across diversity" %}</h3>
+
+                    <div class="section-body">
+                        <div class="app-info-block-text">
+                            <p>
+                                {% trans "The ogee is a design pattern that appears across cultures and centuries — in Islamic, Judaic, Christian, European, and contemporary art. Characterized by its double-S curve, it tessellates beautifully, linking across potentially infinite space." %}
+                            </p>
+                            <p>
+                                {% trans "It captures the spirit of Linked.Art: common patterns adopted across institutions and disciplines, enabling infinite variation while serving as a framework for integrating knowledge into a wider fabric." %}
+                            </p>
+                            <p>
+                                {% trans "Ogee Arches is a starting point, not an end point — a path into the semantic world that we hope will open up a new mosaic of information between its adopters." %}
+                            </p>
+                        </div>
+                        <div class="section-image">
+                            <img src="{% static 'img/ogee_mexico.jpeg' %}"
+                                alt="{% trans 'Ogee pattern in architecture' %}">
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            <!-- End Section 05 -->
         </article>
     </main>
 
     <!-- Footer -->
     <footer>
 
-        <!-- footer content container -->
+        <!-- Footer content -->
         <div class="row footer-links">
 
-            <!-- branding column -->
+            <!-- Branding -->
             <div class="col-lg-4">
-                <h2 class="app-footer-heading">{% trans "Sample Institution Name" %}</h2>
-
-                <div class="organization-address">
-                    {% trans "Sample Address" %}<br>
-                    {% trans "Getty Conservation Institute" %}<br>
-                    {% trans "1200 Getty Center Drive" %}<br>
-                    {% trans "Los Angeles, CA 90049" %}<br>
+                <div class="footer-brand">{% trans "Ogee Arches" %}</div>
+                <div class="splash-img">
+                    <img src="{% static 'img/getty_takin_1.png' %}" alt="{% trans 'Getty / Takin.solutions' %}">
                 </div>
             </div>
 
-            <!-- Info Column -->
+            <!-- Links -->
             <div class="col-lg-8">
-                <h2 class="app-footer-heading">{% trans "Guides and Documentation" %}</h2>
-
-                <!-- Links -->
                 <div class="splash-links">
                     <div class="row">
                         <div class="col-lg-4">
+                            <h3>{% trans "Developers" %}</h3>
                             <ul class="splash-link-container">
                                 <li>
-                                    <a 
-                                        class="splash-link-address"
-                                        href="https://www.archesproject.org/what-is-arches/" 
-                                        target="_blank"
-                                    >
-                                        {% trans "What is Arches" %}
-                                    </a>
+                                    <a class="splash-link-address" href="https://www.getty.edu/" target="_blank">{% trans "Getty Digital" %}</a>
                                 </li>
                                 <li>
-                                    <a class="splash-link-address"
-                                        href="https://www.archesproject.org/implementation-considerations/"
-                                        target="_blank">{% trans "Implementation Considerations" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/development/"
-                                        target="_blank">{% trans "Information For Developers" %}</a>
+                                    <a class="splash-link-address" href="https://www.takin.solutions/" target="_blank">{% trans "Takin.solutions" %}</a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="col-lg-4">
+                            <h3>{% trans "Standards" %}</h3>
                             <ul class="splash-link-container">
                                 <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/faq/"
-                                        target="_blank">{% trans "FAQ" %}</a>
+                                    <a class="splash-link-address" href="https://www.archesproject.org/" target="_blank">{% trans "Arches Project" %}</a>
                                 </li>
                                 <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/standards/"
-                                        target="_blank">{% trans "Standards and Interoperability" %}</a>
+                                    <a class="splash-link-address" href="https://linked.art/" target="_blank">{% trans "Linked.Art" %}</a>
                                 </li>
                                 <li>
-                                    <a class="splash-link-address"
-                                        href="https://arches.readthedocs.io/en/stable/requirements-and-dependencies/"
-                                        target="_blank">{% trans "Installation Guide" %}</a>
+                                    <a class="splash-link-address" href="https://www.getty.edu/research/tools/vocabularies/" target="_blank">{% trans "Getty Vocabularies" %}</a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="col-lg-4">
+                            <h3>{% trans "Resources" %}</h3>
                             <ul class="splash-link-container">
                                 <li>
-                                    <a 
-                                        class="splash-link-address"
-                                        href="https://www.archesproject.org/project-background/" 
-                                        target="_blank"
-                                    >
-                                        {% trans "Arches Project Background" %}
-                                    </a>
+                                    <a class="splash-link-address" href="https://github.com/archesproject/ogee-demo" target="_blank">{% trans "Ogee Project Repository" %}</a>
                                 </li>
                                 <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/videos/"
-                                        target="_blank">{% trans "Arches Webinars/Presentations" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/resource-models/"
-                                        target="_blank">{% trans "Resource Models" %}</a>
+                                    <a class="splash-link-address" href="https://dev.pletka.io/projects/OGEE" target="_blank">{% trans "Semantic Data Model Documentation" %}</a>
                                 </li>
                             </ul>
                         </div>
 
                     </div>
                 </div>
-
             </div>
         </div>
 
         <!-- Copyright Panel -->
         <div class="row copyright-container">
-            <!-- Arches link -->
             <div class="app-footer-links">
                 <div class="col-sm-8">
                     <a class="link-spacing" href="#">{% trans "Terms & Conditions" %}</a>
                     <a class="link-spacing" href="#">{% trans "Privacy Policy" %}</a>
                 </div>
                 <div class="col-sm-4">
-                    <a class="app-footer-arches-link" href="http://www.archesproject.org" target="_blank">
+                    <a class="app-footer-arches-link" href="https://www.archesproject.org" target="_blank">
                         {% trans "Powered by Arches" %}
                     </a>
                 </div>
@@ -582,16 +563,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             function smoothScroll(target) {
                 $('body,html').animate({ 'scrollTop': target.offset().top }, 600);
             }
-
-            // Initialize the slider using slick.
-            $('.home-slider').slick({
-                arrowsPlacement: 'split',
-                dots: true,
-                autoplay: true,
-                autoplaySpeed: 6000,
-                prevArrow: `<button type='button' class='slick-prev pull-left' aria-label="{% trans 'Go to previous slide' %}"><i class='fa fa-chevron-left' aria-hidden='true'></i></button>`,
-                nextArrow: `<button type='button' class='slick-next pull-right' aria-label="{% trans 'Go to next slide' %}"><i class='fa fa-chevron-right' aria-hidden='true'></i></button>`
-            });
 
             var ViewModel = function () {
                 // Place observables and additional logic here.
