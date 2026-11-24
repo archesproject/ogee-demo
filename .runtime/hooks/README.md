@@ -40,7 +40,7 @@ esac
 
 **This file must always exist and stay committed to the project repo** — the Dockerfile
 copies it by exact path, so a missing file fails the build. `init-project.sh` generates a
-no-op stub; `make docker-prep` and the CI build workflow will also recreate it if it's ever
+no-op stub; `make build` and the CI build workflow will also recreate it if it's ever
 missing, but never overwrite a customized one. Because it's copied by name, editing it
 invalidates the `pip install`/`npm i` layers below it in the build cache — unrelated changes
 to the other hooks in this directory do not.
@@ -86,7 +86,9 @@ Add project-specific setup (management commands, etc.) after the loop.
 
 ### `pre_start.sh`
 
-Runs before the Gunicorn production server starts (`run_gunicorn`).
+Runs before the Gunicorn production server starts (`run_server`). It runs as
+**root**, before the drop to `ARCHES_RUN_USER`, so any file it creates that the app
+later writes must already exist (arches-owned) in the image.
 
 Use this for production startup tasks: running migrations, collecting static files,
 warming caches, etc.
@@ -141,7 +143,11 @@ python manage.py loaddata my_fixtures.json
 
 ### `post_reindex.sh`
 
-Runs after `manage.py es reindex_database` completes during `reset_database`.
+Runs at the end of `reset_database` and `restore_backup`. `manage.py es reindex_database`
+runs first only when needed: always on `restore_backup`, and on `reset_database` only if a
+`post_load` hook exists or `restore_tables` changed rows (`load_package` already indexes).
+When `ELASTICSEARCH_ENABLED` is `False`, `manage.py resources calculate_descriptors -y` runs
+instead, on both paths. This hook runs either way.
 
 Use this for any final setup steps that require a fully initialized database and
 search index.
@@ -151,4 +157,25 @@ Example:
 ```bash
 #!/bin/bash
 python manage.py create_admin_user
+```
+
+---
+
+### `maintenance.sh`
+
+Runs when the entrypoint is invoked with `maintenance`, e.g. `docker compose run --rm
+<service> maintenance` or `make maintenance`. This is not part of the normal container
+lifecycle — nothing inside the container schedules it. Fire it from an external
+scheduler (cron, an ECS scheduled task, a k8s CronJob, etc.) that runs on whatever
+cadence you need.
+
+`init-project.sh` generates a no-op stub with this doc comment; project-owned and
+protected from bare `--force`, like `build_deps.sh`. Use it for periodic upkeep:
+pruning stale data, vacuuming tables, clearing expired sessions/caches, etc.
+
+Example:
+
+```bash
+#!/bin/bash
+python manage.py clearsessions
 ```
